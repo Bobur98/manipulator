@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { useState } from "react";
 
 export default function GridVisualization() {
@@ -14,6 +14,8 @@ export default function GridVisualization() {
           gridTemplateColumns: "repeat(5, 40px)",
           gridTemplateRows: "repeat(5, 40px)",
           gap: "5px",
+          placeSelf: "center",
+          marginBottom: "15px",
         }}
       >
         {Array.from({ length: 25 }, (_, i) => (
@@ -28,6 +30,7 @@ export default function GridVisualization() {
           />
         ))}
       </div>
+
       <Button onClick={() => moveManipulator("Л")}>Move Left</Button>
       <Button onClick={() => moveManipulator("П")}>Move Right</Button>
       <Button onClick={() => moveManipulator("В")}>Move Up</Button>
