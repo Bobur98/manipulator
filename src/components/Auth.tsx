@@ -20,7 +20,17 @@ export default function Auth() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      style={{
+        height: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        margin: "0 auto",
+        gap: "10px",
+      }}
+    >
       <TextField {...register("username")} label="Username" required />
       <TextField
         {...register("password")}

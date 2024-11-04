@@ -12,12 +12,19 @@ export default function CommandInput() {
   );
 
   const handleOptimize = () => {
-    dispatch(setCommands(input));
+    dispatch(
+      setCommands({
+        commands: "ппповвб",
+        initialPos: { x: 0, y: 0 },
+        initialSamples: [
+          { x: 4, y: 1 },
+          { x: 2, y: 3 },
+          { x: 3, y: 0 },
+        ],
+      })
+    );
   };
-
-  const handleSave = () => {
-    dispatch(saveToHistory());
-  };
+  // dispatch(saveToHistory());
 
   return (
     <Stack>
@@ -29,9 +36,6 @@ export default function CommandInput() {
         />
         <Button onClick={handleOptimize} variant="contained">
           Optimize
-        </Button>
-        <Button onClick={handleSave} variant="contained">
-          Save
         </Button>
       </Box>
       <p>Optimized Command: {optimizedCommand}</p>

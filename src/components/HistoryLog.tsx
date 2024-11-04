@@ -11,6 +11,17 @@ import { RootState } from "../redux/store";
 
 export default function HistoryLog() {
   const history = useSelector((state: RootState) => state.command.history);
+
+  // Helper function to format position
+  const formatPosition = (position: { x: number; y: number }) => {
+    return `(${position.x}, ${position.y})`;
+  };
+
+  // Helper function to format sample positions
+  const formatSamplePositions = (samples: { x: number; y: number }[]) => {
+    return samples.map((sample) => `(${sample.x}, ${sample.y})`).join(", ");
+  };
+
   return (
     <TableContainer>
       <Table>
@@ -18,8 +29,10 @@ export default function HistoryLog() {
           <TableRow>
             <TableCell>Original Command</TableCell>
             <TableCell>Optimized Command</TableCell>
-            <TableCell>Date</TableCell>
-            <TableCell>Sample Positions</TableCell>
+            <TableCell sx={{ width: "200px" }}>Date</TableCell>
+
+            <TableCell>Initial Sample Positions</TableCell>
+            <TableCell>Final Sample Positions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -28,7 +41,11 @@ export default function HistoryLog() {
               <TableCell>{entry.original}</TableCell>
               <TableCell>{entry.optimized}</TableCell>
               <TableCell>{entry.date}</TableCell>
-              <TableCell>{entry.samplesPosition}</TableCell>
+
+              <TableCell>
+                {formatSamplePositions(entry.initialSamples)}
+              </TableCell>
+              <TableCell>{formatSamplePositions(entry.finalSamples)}</TableCell>
             </TableRow>
           ))}
         </TableBody>
