@@ -12,11 +12,6 @@ import { RootState } from "../redux/store";
 export default function HistoryLog() {
   const history = useSelector((state: RootState) => state.command.history);
 
-  // Helper function to format position
-  const formatPosition = (position: { x: number; y: number }) => {
-    return `(${position.x}, ${position.y})`;
-  };
-
   // Helper function to format sample positions
   const formatSamplePositions = (samples: { x: number; y: number }[]) => {
     return samples.map((sample) => `(${sample.x}, ${sample.y})`).join(", ");

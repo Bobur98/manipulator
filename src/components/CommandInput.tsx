@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { saveToHistory, setCommands } from "../redux/commandSlice";
+import { setCommands } from "../redux/commandSlice";
 import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 
 export default function CommandInput() {

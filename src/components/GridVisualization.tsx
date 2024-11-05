@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Alert, Button, Slider, Snackbar, Typography } from "@mui/material";
+import { Button, Slider, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { setFinalPosition, saveToHistory } from "../redux/commandSlice";
