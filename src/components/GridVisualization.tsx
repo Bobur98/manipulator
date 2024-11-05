@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button } from "@mui/material";
+import { Button, Slider, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { setFinalPosition, saveToHistory } from "../redux/commandSlice";
@@ -13,14 +13,17 @@ const INITIAL_SAMPLES = [
 ];
 
 export default function GridVisualization() {
-  const [robotPosition, setRobotPosition] = useState(INITIAL_POSITION);
+  const { optimizedCommand, initialPos, initialSamples } = useSelector(
+    (state: RootState) => state.command
+  );
+  console.log(initialSamples);
+
+  const [robotPosition, setRobotPosition] = useState(initialPos);
   const [samples, setSamples] = useState(INITIAL_SAMPLES);
   const [holdingSample, setHoldingSample] = useState(false);
-  const dispatch = useDispatch();
+  const [animationSpeed, setAnimationSpeed] = useState(500);
 
-  const optimizedCommand = useSelector(
-    (state: RootState) => state.command.optimizedCommand
-  );
+  const dispatch = useDispatch();
 
   const parseCommands = (commands: string): string[] => {
     const expandedCommands: string[] = [];
@@ -64,17 +67,28 @@ export default function GridVisualization() {
     const intervalId = setInterval(() => {
       if (currentStep >= commandSequence.length) {
         clearInterval(intervalId);
-        setRobotPosition(INITIAL_POSITION); // Reset to initial position after completion
-        setSamples(newSamples); // Update the samples' final positions
-        setHoldingSample(false); // Reset holding state
+
+        // Save final state after the animation completes
+        dispatch(
+          setFinalPosition({
+            finalPos: robotPos,
+            finalSamples: newSamples,
+          })
+        );
+        dispatch(saveToHistory());
+
+        // Reset robot position and sample holding state
+        setRobotPosition(INITIAL_POSITION);
+        setHoldingSample(false);
         return;
       }
 
       const command = commandSequence[currentStep];
       console.log("Executing command:", command);
-
-      switch (command) {
+      const UppercaseCommand = command.toUpperCase();
+      switch (UppercaseCommand) {
         case "Л": // Left
+          console.log(command);
           if (robotPos.x > 0) robotPos.x -= 1;
           break;
         case "П": // Right
@@ -90,10 +104,10 @@ export default function GridVisualization() {
           const sampleIndex = newSamples.findIndex(
             (sample) => sample.x === robotPos.x && sample.y === robotPos.y
           );
-          if (sampleIndex !== -1) {
+          if (sampleIndex !== -1 && !holding) {
+            // Only pick up if robot is not already holding a sample
             newSamples.splice(sampleIndex, 1);
             holding = true;
-
             console.log("Picked up a sample at:", robotPos);
           }
           break;
@@ -101,7 +115,6 @@ export default function GridVisualization() {
           if (holding) {
             newSamples.push({ ...robotPos });
             holding = false;
-
             console.log("Dropped a sample at:", robotPos);
           }
           break;
@@ -110,11 +123,11 @@ export default function GridVisualization() {
       }
 
       setRobotPosition({ ...robotPos });
+      setSamples([...newSamples]); // Update sample positions in state
       setHoldingSample(holding);
 
       currentStep++;
-    }, 500);
-    dispatch(saveToHistory());
+    }, animationSpeed);
   };
 
   return (
@@ -152,6 +165,16 @@ export default function GridVisualization() {
           );
         })}
       </div>
+      <Typography gutterBottom>Animation Speed (ms)</Typography>
+      <Slider
+        value={animationSpeed}
+        onChange={(e, value) => setAnimationSpeed(value as number)}
+        aria-labelledby="animation-speed-slider"
+        min={100}
+        max={2000}
+        step={100}
+        valueLabelDisplay="auto"
+      />
       <Button
         onClick={executeCommands}
         variant="contained"

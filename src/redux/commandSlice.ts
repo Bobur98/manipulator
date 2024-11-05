@@ -59,7 +59,7 @@ const commandSlice = createSlice({
         initialPosition: state.initialPos,
         finalPosition: state.finalPos,
         initialSamples: state.initialSamples,
-        finalSamples: state.finalSamples, // set this after execution!!!
+        finalSamples: state.finalSamples, // setting this after execution!!!
       });
     },
     setFinalPosition(
@@ -80,5 +80,18 @@ export { setCommands, saveToHistory, setFinalPosition };
 export default commandSlice.reducer;
 
 function optimizeCommand(commands: string): string {
-  return commands.replace(/(.)\1+/g, (match, p1) => `${match.length}${p1}`);
+  let simpleOptimized = commands.replace(
+    /(.)\1+/g,
+    (match, p1) => `${match.length}${p1}`
+  );
+
+  // repeating sequences ( "ЛЛЛНННЛЛЛННН" -> "2(3Л3Н)")
+  const patternRegex = /((\d*\D+)+)\1+/g;
+  simpleOptimized = simpleOptimized.replace(patternRegex, (match) => {
+    const sequence = match.slice(0, match.length / 2);
+    const repeatCount = match.length / sequence.length;
+    return `${repeatCount}(${sequence})`;
+  });
+
+  return simpleOptimized;
 }
