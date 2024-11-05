@@ -40,7 +40,10 @@ export default function HistoryLog() {
             <TableRow key={index}>
               <TableCell>{entry.original}</TableCell>
               <TableCell>{entry.optimized}</TableCell>
-              <TableCell>{entry.date}</TableCell>
+              <TableCell>
+                {new Date(entry.date).toLocaleDateString()}{" "}
+                {new Date(entry.date).toLocaleTimeString()}
+              </TableCell>
 
               <TableCell>
                 {formatSamplePositions(entry.initialSamples)}

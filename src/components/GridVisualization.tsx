@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Button, Slider, Typography } from "@mui/material";
+import { Alert, Button, Slider, Snackbar, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { setFinalPosition, saveToHistory } from "../redux/commandSlice";
+import SnackbarAlert from "./SnackbarAlert";
 
 const GRID_SIZE = 5;
 const INITIAL_POSITION = { x: 0, y: 0 };
@@ -22,6 +23,7 @@ export default function GridVisualization() {
   const [samples, setSamples] = useState(INITIAL_SAMPLES);
   const [holdingSample, setHoldingSample] = useState(false);
   const [animationSpeed, setAnimationSpeed] = useState(500);
+  const [snackbarOpen, setSnackbarOpen] = useState(false); // Snackbar state
 
   const dispatch = useDispatch();
 
@@ -80,6 +82,8 @@ export default function GridVisualization() {
         // Reset robot position and sample holding state
         setRobotPosition(INITIAL_POSITION);
         setHoldingSample(false);
+        setSnackbarOpen(true);
+
         return;
       }
 
@@ -182,6 +186,11 @@ export default function GridVisualization() {
       >
         Execute Commands
       </Button>
+
+      <SnackbarAlert
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+      />
     </div>
   );
 }
